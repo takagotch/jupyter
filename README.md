@@ -30,8 +30,19 @@ var patch = {
 }
 config.update(patch)
 
+def _jupyter_server_extension_paths():
+  return [{
+    "module": "my_module"
+  }]
+
+def load_jupyter_server_extension(nbapp):
+  nbapp.log.info("my module enabled!")
 ```
 
-```
+```yml
+- setup.py
+- MANIFEST.in
+- my_module/
+  - __init__.py
 ```
 
