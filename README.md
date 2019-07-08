@@ -105,6 +105,14 @@ def bundle(handler, model):
       'attachment; filename="{}"'.format(tar_filename))
     handler.set_header('Content-Type', 'application/gzip')
     handler.finish(tar_buffer.getvalue())
+    
+ class NoOpCheckpoints(GenericCheckpointsMixin, Checkpoints):
+    """ """
+    def create_file_checkpoint():
+    def create_notebook_checkpoint():
+    def get_file_checkpoint():
+    def get_book_checkpoint()
+ 
 ```
 
 ```yml
