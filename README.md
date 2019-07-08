@@ -108,10 +108,14 @@ def bundle(handler, model):
     
  class NoOpCheckpoints(GenericCheckpointsMixin, Checkpoints):
     """ """
-    def create_file_checkpoint():
-    def create_notebook_checkpoint():
-    def get_file_checkpoint():
-    def get_book_checkpoint()
+    def create_file_checkpoint(self, content, format, path):
+    def create_notebook_checkpoint(self, nb, path):
+    def get_file_checkpoint(self, cehckpoint_id, path):
+    def get_book_checkpoint(self, checkpoint_id, path):
+    def delete_checkpoint(self, checkpoint_id, path):
+    def list_checkpoints(self, path):
+      return []
+    def rename_checkpoint(self, checkpoint_id, old_path, new_path):
  
 ```
 
