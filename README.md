@@ -37,6 +37,74 @@ def _jupyter_server_extension_paths():
 
 def load_jupyter_server_extension(nbapp):
   nbapp.log.info("my module enabled!")
+  
+def _jupyter_server_extension_paths():
+  return [{
+    "module": "my_fancy_module"
+  }]
+  
+def _jupyter_nbextension_paths():
+  return [dict(
+    section="notebook",
+    src="static",
+    dest="my_fancy_module",
+    require="my_fancy_module/index")]
+    
+def load_jupyter_server_extension(nbapp):
+  nbapp.log.info("my module enbaled!")
+
+import setuptools
+
+setuptools.setup(
+  name="MyFancyModule",
+  include_package_data=True,
+  data_files=[
+    ("share/jupyter/nbextensions/my_fancy_module", [
+      "my_fancy_module/static/index.js",
+    ]),
+    ("etc/jupyter/nbconfig/notebook.d", [
+      "jupyter-config/nbconfig/notebook.d/my_fancy_module.json"
+    ]),
+    ("etc/jupyter/jupyter_notebook_config.d", [
+      "jupyter-config/jupyter_notebook_config.d/my_fancy_module.json"
+    ])
+  ],
+  zip_safe=False
+)
+
+import tarfile
+import io
+import os
+import nbformat
+
+def _jupyter_bundlerextension_paths():
+  """ """
+  return [{
+    "name": "tarball_bundler",
+    "module_name": "my_tarball_bundler",
+    "label": "Notebook Tarball (tar.gz)",
+    "group": "download"
+  }]
+  
+def bundle(handler, model):
+  """
+  """
+  notebook_filename = model['name']
+  notebook_content = nbformat.writes(model['content']).encode('utf-8')
+  notebook_name = os.path.splitext(notebook_filename)[0]
+  tar_filename = ''.format(notebook_name)
+  
+  info = tarfile.TarInfo(notebook_filename)
+  info.size = len(notebook_content)
+  
+  with io.ByteIO() as tar_buffer:
+    with tarfile.open(tar_filename, "w:gz", fileobj=tar_buffer) as tar:
+      tar.addfile(info, io.BytesIO(notebook_content))
+      
+    handler.set_header('Content-Disposition',
+      'attachment; filename="{}"'.format(tar_filename))
+    handler.set_header('Content-Type', 'application/gzip')
+    handler.finish(tar_buffer.getvalue())
 ```
 
 ```yml
